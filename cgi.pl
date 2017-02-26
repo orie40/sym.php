@@ -283,6 +283,7 @@ function rm_rename_form(i,file,f)
 <a href="$ScriptLocation">Home</a> | 
 <a href="$ScriptLocation?a=command&d=$EncodedCurrentDir">Command</a> |
 <a href="$ScriptLocation?a=gui&d=$EncodedCurrentDir">GUI</a> | 
+<a href="$ScriptLocation?a=upload&d=$EncodedCurrentDir">Upload File</a> | 
 <a href="$ScriptLocation?a=download&d=$EncodedCurrentDir">Download File</a> |
 
 <a href="$ScriptLocation?a=backbind">Back & Bind</a> |
@@ -598,7 +599,27 @@ Download: <input class="submit" type="submit" value="Begin">
 END
 }
 
+#------------------------------------------------------------------------------
+# Prints the HTML form that allows the user to upload files
+#------------------------------------------------------------------------------
+sub PrintFileUploadForm
+{
+	my $dir= &AddLinkDir("upload");
+	$Prompt = $WinNT ? "$dir > " : "[admin\@$ServerName $dir]\$ ";
+	return <<END;
+<form name="f" enctype="multipart/form-data" method="POST" action="$ScriptLocation">
+$Prompt upload<br><br>
+Filename: <input class="file" type="file" name="f" size="35"><br><br>
+Options: &nbsp;<input type="checkbox" name="o" id="up" value="overwrite">
+<label for="up">Overwrite if it Exists</label><br><br>
+Upload:&nbsp;&nbsp;&nbsp;<input class="submit" type="submit" value="Begin">
+<input type="hidden" name="d" value="$CurrentDir">
+<input class="submit" type="hidden" name="a" value="upload">
 
+</form>
+
+END
+}
 
 #------------------------------------------------------------------------------
 # This function is called when the timeout for a command expires. We need to
@@ -718,7 +739,52 @@ sub BeginDownload
 	}
 }
 
+#------------------------------------------------------------------------------
+# This function is called when the user wants to upload a file. If the
+# file is not specified, it displays a form allowing the user to specify a
+# file, otherwise it starts the upload process.
+#------------------------------------------------------------------------------
+sub UploadFile
+{
+	# if no file is specified, print the upload form again
+	if($TransferFile eq "")
+	{
+		return &PrintFileUploadForm;
 
+	}
+	my $result="";
+	# start the uploading process
+	$result .= "Uploading $TransferFile to $CurrentDir...<br>";
+
+	# get the fullly qualified pathname of the file to be created
+	chop($TargetName) if ($TargetName = $CurrentDir) =~ m/[\\\/]$/;
+	$TransferFile =~ m!([^/^\\]*)$!;
+	$TargetName .= $PathSep.$1;
+
+	$TargetFileSize = length($in{'filedata'});
+	# if the file exists and we are not supposed to overwrite it
+	if(-e $TargetName && $Options ne "overwrite")
+	{
+		$result .= "Failed: Destination file already exists.<br>";
+	}
+	else # file is not present
+	{
+		if(open(UPLOADFILE, ">$TargetName"))
+		{
+			binmode(UPLOADFILE) if $WinNT;
+			print UPLOADFILE $in{'filedata'};
+			close(UPLOADFILE);
+			$result .= "Transfered $TargetFileSize Bytes.<br>";
+			$result .= "File Path: $TargetName<br>";
+		}
+		else
+		{
+			$result .= "Failed: $!<br>";
+		}
+	}
+	$result .= &PrintCommandLineInputForm;
+	return $result;
+}
 
 #------------------------------------------------------------------------------
 # This function is called when the user wants to download a file. If the
@@ -1529,6 +1595,12 @@ elsif($Action eq "save")				 	# user wants to save a file
 		print "<run> Sorry! You dont have permissions! </run><br>";
 	}
 	print &ListDir;
+}
+elsif($Action eq "upload") 					# user wants to upload a file
+{
+	&PrintPageHeader;
+
+	print &UploadFile;
 }
 elsif($Action eq "backbind") 				# user wants to back connect or bind port
 {
