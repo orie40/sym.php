@@ -15,7 +15,7 @@ background-attachment:fixed;}
 <b>TOOLS AUTO ENCODE DAN DECODE </b>
 <br>
 <form method="post"><br>
-<textarea class='inputz' cols=50 rows=12 name="mbutt" style="background:transparent;color:aqua;"></textarea><br><br>
+<textarea class='inputz' cols=70 rows=12 name="mbutt" style="background:transparent;color:aqua;"></textarea><br><br>
 <select class='inputz' size="1" name="ope" style="background:red;color:aqua;">
 <option style='background:transparent;color:aqua;'><center>[#] Encryption [#]</option>
 <option value="urlencode" style='background:transparent;color:aqua;'>url</option>
@@ -93,6 +93,6 @@ break;case 'ur' : $codi=convert_uudecode($text);
 break;case 'url' : $codi=base64_decode(gzinflate(str_rot13(convert_uudecode(gzinflate(base64_decode(($text)))))));
 break;default:break;}}
 $html = htmlentities(stripslashes($codi));
-echo "<from><center><h3><font size=4 color=aqua>HASIL</h3></center><textarea cols=50 rows=12 style='onfocus();font-weight:bold;color:red;background-image: transparent;opacity:0.40;background-size:100%;background-repeat: no-repeat;' class='inputz' readonly>".$html."</textarea><BR/><BR/></center></from>";
+echo "<from><center><h3><font size=4 color=aqua>HASIL</h3></center><textarea cols=70 rows=12 style='onfocus();font-weight:bold;color:red;background-image: transparent;opacity:0.40;background-size:100%;background-repeat: no-repeat;' class='inputz' readonly>".$html."</textarea><BR/><BR/></center></from>";
 ?>
 </html>
