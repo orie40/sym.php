@@ -577,26 +577,6 @@ Download: <input class="submit" type="submit" value="Begin">
 END
 }
 
-#------------------------------------------------------------------------------
-# Prints the HTML form that allows the user to upload files
-#------------------------------------------------------------------------------
-sub PrintFileUploadForm
-{
-	$EncodeCurrentDir = EncodeDir($CurrentDir);
-	my $dir= &AddLinkDir("upload");
-	$Prompt = $WinNT ? "$dir > " : "[admin\@$ServerName $dir]\$ ";
-	return <<END;
-<form name="f" enctype="multipart/form-data" method="POST" action="$ScriptLocation">
-$Prompt upload<br><br>
-Filename: <input class="file" type="file" name="f" size="35"><br><br>
-Options: &nbsp;<input type="checkbox" name="o" id="up" value="overwrite">
-<label for="up">Overwrite if it Exists</label><br><br>
-Upload:&nbsp;&nbsp;&nbsp;<input class="submit" type="submit" value="Begin">
-<input type="hidden" name="d" value="$EncodeCurrentDir">
-<input class="submit" type="hidden" name="a" value="upload">
-</form>
-END
-}
 
 #------------------------------------------------------------------------------
 # This function is called when the timeout for a command expires. We need to
